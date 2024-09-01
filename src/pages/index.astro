@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+const imageFiles = await Astro.glob('/public/photos/*');
+
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<h1 class="mb-5 px-4"><em>In memoriam</em> <a target="_blank" href="http://instagram.com/shibainu.berry/">@shibainu.berry</a> ✝</h1>
+		<div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 mb-5 mx-auto w-full px-4">
+			{
+				imageFiles.map((img) => (
+					<Image
+						src={img.default}
+						width="600"
+						alt=""
+						class="mb-3 w-full rounded"
+					/>
+				))
+			}
+		</div>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		padding: 1rem;
+		width: 800px;
+		max-width: calc(100% - 2rem);
+		font-size: 20px;
+		line-height: 1.6;
+	}
+	
+</style>
