@@ -1,36 +1,154 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
-const imageFiles = await Astro.glob('/public/photos/*');
-
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+const imageFiles = await Astro.glob("/public/photos/*");
 ---
 
 <Layout title="Welcome to Astro.">
-	<main>
-		<h1 class="mb-5 px-4"><em>In memoriam</em> <a target="_blank" href="http://instagram.com/shibainu.berry/">@shibainu.berry</a> ✝</h1>
-		<div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 mb-5 mx-auto w-full px-4">
-			{
-				imageFiles.map((img) => (
-					<Image
-						src={img.default}
-						width="600"
-						alt=""
-						class="mb-3 w-full rounded"
-					/>
-				))
-			}
-		</div>
-	</main>
+  <main>
+    <h1 class="mb-5 px-4">
+      <em>In memoriam</em>
+      <a target="_blank" href="http://instagram.com/shibainu.berry/"
+        >@shibainu.berry</a
+      > ✝
+    </h1>
+    <div
+      class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-3 mb-5 mx-auto w-full px-4"
+    >
+      {
+        imageFiles.map((img) => (
+          <figure class="easeloadFigure" style="opacity:0">
+            <Image
+              src={img.default}
+              width="600"
+              alt=""
+              class="w-full rounded easeload"
+              style="opacity:0"
+            />
+          </figure>
+        ))
+      }
+    </div>
+    <script>
+      const imgsInViewPort = Array.from(
+        document.querySelectorAll("img")
+      ).filter((img) => {
+        const rect = img.getBoundingClientRect();
+        return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <=
+            (window.innerHeight || document.documentElement.clientHeight) &&
+          rect.right <=
+            (window.innerWidth || document.documentElement.clientWidth)
+        );
+      });
+      var images = imgsInViewPort;
+      var loadedImages = 0;
+
+      images.forEach(function (img) {
+        img.onload = function () {
+          loadedImages++;
+          console.log({ loadedImages, length: images.length });
+          if (loadedImages === images.length) {
+            addClasses();
+            // all images have loaded, display them
+            console.log("All images have loaded");
+            // display images code here
+          }
+        };
+      });
+
+      function addClasses() {
+        const imgs = document.querySelectorAll("img");
+        for (const img of imgs) {
+          img.classList.add("img");
+
+          const figure = img.parentNode as Element;
+          if (figure) {
+            figure.classList.add("figure");
+            figure.style.opacity = 1;
+          }
+          img.style.opacity = 1;
+        }
+      }
+    </script>
+  </main>
 </Layout>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	
+  .easeloadFigure {
+    opacity: 0;
+    -webkit-transition: all 100ms linear;
+    -moz-transition: all 100ms linear;
+    -ms-transition: all 100ms linear;
+    -o-transition: all 100ms linear;
+    transition-behavior: allow-discrete;
+  }
+  .easeload {
+    opacity: 0;
+    -webkit-transition: all 200ms linear;
+    -moz-transition: all 200ms linear;
+    -ms-transition: all 200ms linear;
+    -o-transition: all 200ms linear;
+    transition-behavior: allow-discrete;
+  }
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    font-size: 20px;
+    line-height: 1.6;
+  }
+
+  .img {
+    border: solid 2px;
+    border-bottom-color: #664433;
+    border-left-color: #72491e;
+    border-right-color: #72491e;
+    border-top-color: #553311;
+    max-height: 100%;
+    max-width: 100%;
+  }
+
+  .figure {
+    background-color: #996633;
+    border: solid 5px #332211;
+    border-bottom-color: #332211;
+    border-left-color: #996633;
+    border-radius: 2px;
+    border-right-color: #332211;
+    border-top-color: #996633;
+    box-shadow:
+      0 0 5px 0 rgba(0, 0, 0, 0.25) inset,
+      0 5px 10px 5px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
+    display: inline-block;
+    /* margin:10vh 10vw; */
+    /* height:80vh; */
+    /* padding:8px; */
+    position: relative;
+    text-align: center;
+    &:before {
+      border-radius: 2px;
+      bottom: -2px;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25) inset;
+      content: "";
+      left: -2px;
+      position: absolute;
+      right: -2px;
+      top: -2px;
+    }
+    &:after {
+      border-radius: 2px;
+      bottom: -2.5px;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.25);
+      content: "";
+      left: -2.5px;
+      position: absolute;
+      right: -2.5px;
+      top: -2.5px;
+    }
+  }
 </style>
